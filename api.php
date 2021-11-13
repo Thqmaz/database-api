@@ -2,20 +2,22 @@
 include 'api/objects/Access.php';
 $access = new Access($dbConn);
 if (isset($_GET['action'])) {
-    if(isset($_GET['apikey'])) {
-        if(!$access->validateAPIkey($_GET['apikey'])) {
+    if (!isset($_POST['apikey'])) {
+        if (isset($_GET['apikey'])) {
+            if (!$access->validateAPIkey($_GET['apikey'])) {
+                http_response_code(404);
+                echo json_encode(
+                    array("message" => "Ongeldige API key opgegeven")
+                );
+                exit;
+            }
+        } else {
             http_response_code(404);
             echo json_encode(
                 array("message" => "Ongeldige API key opgegeven")
             );
             exit;
         }
-    } else {
-        http_response_code(404);
-        echo json_encode(
-            array("message" => "Ongeldige API key opgegeven")
-        );
-        exit;
     }
     switch ($_GET['action']) {
         case 'createProduct':
@@ -35,4 +37,3 @@ if (isset($_GET['action'])) {
             break;
     }
 }
-?>
